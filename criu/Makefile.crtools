@@ -88,9 +88,7 @@ obj-y			+= pie-util-vdso-elf32.o
 CFLAGS_pie-util-vdso-elf32.o      += -DCONFIG_VDSO_32
 endif
 
-ifeq ($(UFFD),1)
 obj-y	+= uffd.o
-endif
 
 PROTOBUF_GEN := scripts/protobuf-gen.sh
 
