@@ -50,7 +50,9 @@ CFLAGS			+= -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0
 
 
 ccflags-y		+= -DCR_NOGLIBC
+ifneq ($(filter-out clean mrproper,$(MAKECMDGOALS)),)
 NATIVE_CFLAGS		:= $(shell $(SRC_DIR)/compel/compel --arch=$(ARCH) cflags)
+endif
 
 ifeq ($(ARCH),x86)
         NATIVE_CFLAGS	+= -DCONFIG_X86_64
