@@ -137,16 +137,12 @@ int dedup_one_iovec(struct page_read *pr, struct iovec *iov)
 	return 0;
 }
 
-static void put_pagemap(struct page_read *pr)
-{
-	pr->curr_pme++;
-}
-
 static int get_pagemap(struct page_read *pr, struct iovec *iov)
 {
 	PagemapEntry *pe;
 
 	for (;;) {
+		pr->curr_pme++;
 		if (pr->curr_pme >= pr->nr_pmes)
 			return 0;
 
@@ -154,7 +150,6 @@ static int get_pagemap(struct page_read *pr, struct iovec *iov)
 
 		if (!pe->zero)
 			break;
-		put_pagemap(pr);
 	}
 
 	pagemap2iovec(pe, iov);
@@ -495,7 +490,7 @@ static void reset_pagemap(struct page_read *pr)
 {
 	pr->cvaddr = 0;
 	pr->pi_off = 0;
-	pr->curr_pme = 0;
+	pr->curr_pme = -1;
 	pr->pe = NULL;
 
 	/* FIXME: take care of bunch */
