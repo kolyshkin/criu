@@ -200,12 +200,9 @@ $(eval $(call gen-built-in,images))
 
 .PHONY: .FORCE
 
+#
 # Compel get used by CRIU, build it earlier
-compel/%: .FORCE
-	$(Q) $(MAKE) $(build)=compel $@
-
-test/compel/%: .FORCE
-	$(Q) $(MAKE) $(build)=compel $@
+include Makefile.compel
 
 #
 # CRIU building done in own directory
@@ -252,6 +249,7 @@ mrproper: subclean
 	$(Q) $(MAKE) $(build)=compel $@
 	$(Q) $(RM) $(CONFIG_HEADER)
 	$(Q) $(RM) $(VERSION_HEADER)
+	$(Q) $(RM) $(COMPEL_VERSION_HEADER)
 	$(Q) $(RM) include/common/asm
 	$(Q) $(RM) cscope.*
 	$(Q) $(RM) tags TAGS
