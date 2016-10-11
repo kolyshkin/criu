@@ -271,8 +271,6 @@ mrproper: subclean
 	$(Q) $(MAKE) $(build)=compel $@
 	$(Q) $(MAKE) $(build)=compel/plugins $@
 	$(Q) $(MAKE) $(build)=soccr $@
-	$(Q) $(RM) cscope.*
-	$(Q) $(RM) tags TAGS
 .PHONY: mrproper
 
 #
@@ -315,24 +313,29 @@ dist tar: criu-$(tar-name).tar.bz2
 	@true
 .PHONY: dist tar
 
-tags:
-	$(call msg-gen, $@)
-	$(Q) $(RM) tags
-	$(Q) $(FIND) . -name '*.[hcS]' ! -path './.*' ! -path './test/*' -print | xargs $(CTAGS) -a
-.PHONY: tags
+clean-y		+= cscope.files
+cscope.files:
+	$(Q) $(RM) $@
+	$(Q) $(FIND) . -name '*.[hcS]' ! -path './.*' ! -path './test/*' ! -type l -print > $@
+.PHONY: cscope.files
 
-etags:
+mrproper-y	+= tags
+tags: cscope.files
 	$(call msg-gen, $@)
-	$(Q) $(RM) TAGS
-	$(Q) $(FIND) . -name '*.[hcS]' ! -path './.*' ! -path './test/*' -print | xargs $(ETAGS) -a
-.PHONY: etags
+	$(Q) $(RM) $@
+	$(Q) $(CTAGS) -L $< -f $@
 
-
-cscope:
+mrproper-y	+= TAGS
+TAGS: cscope.files
 	$(call msg-gen, $@)
-	$(Q) $(FIND) . -name '*.[hcS]' ! -path './.*' ! -path './test/*' ! -type l -print > cscope.files
-	$(Q) $(CSCOPE) -bkqu
-.PHONY: cscope
+	$(Q) $(RM) $@
+	$(Q) xargs -a $< $(ETAGS)
+etags: TAGS
+
+mrproper-y	+= cscope.out cscope.in.out cscope.po.out
+cscope: cscope.files
+	$(call msg-gen, $@)
+	$(Q) $(CSCOPE) -bqu
 
 gcov:
 	$(E) " GCOV"
