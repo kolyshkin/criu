@@ -1077,7 +1077,7 @@ int open_mountpoint(struct mount_info *pm)
 	int fd = -1, ns_old = -1;
 	char mnt_path_tmp[] = "/tmp/cr-tmpfs.XXXXXX";
 	char mnt_path_root[] = "/cr-tmpfs.XXXXXX";
-	char *mnt_path = mnt_path_tmp;
+	char *mnt_path;
 	int cwd_fd;
 
 	/*
