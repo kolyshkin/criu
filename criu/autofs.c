@@ -286,17 +286,15 @@ static int autofs_revisit_options(struct mount_info *pm)
 {
 	FILE *f;
 	char *str;
-	int ret = -ENOMEM;
+	int ret = 0;
 
-	str = malloc(1024);
-	if (!str) {
-		pr_err("failed to allocate\n");
+	str = xmalloc(1024);
+	if (!str)
 		return -ENOMEM;
-	}
 
 	f = fopen_proc(getpid(), "mountinfo");
 	if (!f) {
-		pr_perror("Can't open %d mountinfo", getpid());
+		ret = -errno;
 		goto free_str;
 	}
 
@@ -313,14 +311,11 @@ static int autofs_revisit_options(struct mount_info *pm)
 				if (mnt_id != pm->mnt_id)
 					break;
 			} else if (strstr(token, "pipe_ino=")) {
-				ret = 0;
 				free(pm->options);
 
 				pm->options = xstrdup(token);
 				if (!pm->options)
-					pr_err("failed to duplicate string\n");
-				else
-					ret = 0;
+					ret = -ENOMEM;
 				goto close_proc;
 			}
 		}
