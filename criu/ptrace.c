@@ -225,7 +225,6 @@ try_again:
 			goto err;
 		}
 
-		ret = 0;
 		goto try_again;
 	}
 
