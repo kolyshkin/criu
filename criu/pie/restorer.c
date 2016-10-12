@@ -1105,7 +1105,7 @@ static int wait_zombies(struct task_restore_args *task_args)
  */
 long __export_restore_task(struct task_restore_args *args)
 {
-	long ret = -1;
+	long ret;
 	int i;
 	VmaEntry *vma_entry;
 	unsigned long va;
@@ -1139,7 +1139,7 @@ long __export_restore_task(struct task_restore_args *args)
 
 	ksigfillset(&to_block);
 	ksigaddset(&to_block, SIGCHLD);
-	ret = sys_sigprocmask(SIG_UNBLOCK, &to_block, NULL, sizeof(k_rtsigset_t));
+	sys_sigprocmask(SIG_UNBLOCK, &to_block, NULL, sizeof(k_rtsigset_t));
 
 	log_set_fd(args->logfd);
 	log_set_loglevel(args->loglevel);
