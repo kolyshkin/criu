@@ -619,7 +619,6 @@ static int find_vmas(struct lazy_pages_info *lpi)
 		if (!vma)
 			goto out;
 
-		ret = 0;
 		ri->vmas.nr++;
 		vma->e = ri->mm->vmas[vn++];
 
