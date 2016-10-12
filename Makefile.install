@@ -47,7 +47,6 @@ install-criu: criu
 .PHONY: install-criu
 
 install: install-man install-lib install-criu
-	@true
 .PHONY: install
 
 uninstall:

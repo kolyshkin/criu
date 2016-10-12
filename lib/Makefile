@@ -29,7 +29,6 @@ lib-py:
 .PHONY: lib-py
 
 all: lib-c lib-py
-	@true
 .PHONY: all
 
 clean:

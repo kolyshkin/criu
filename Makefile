@@ -310,7 +310,6 @@ tar-name := $(shell echo $(head-name) | sed -e 's/^v//g')
 criu-$(tar-name).tar.bz2:
 	git archive --format tar --prefix 'criu-$(tar-name)/' $(head-name) | bzip2 > $@
 dist tar: criu-$(tar-name).tar.bz2
-	@true
 .PHONY: dist tar
 
 clean-y		+= cscope.files
