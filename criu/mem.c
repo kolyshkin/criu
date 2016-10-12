@@ -505,7 +505,6 @@ int prepare_mm_pid(struct pstree_item *i)
 		if (!vma)
 			break;
 
-		ret = 0;
 		ri->vmas.nr++;
 		if (!img)
 			vma->e = ri->mm->vmas[vn++];
