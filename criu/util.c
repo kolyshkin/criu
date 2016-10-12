@@ -1144,7 +1144,7 @@ int run_tcp_server(bool daemon_mode, int *ask, int cfd, int sk)
 	}
 
 	if (sk >= 0) {
-		ret = *ask = accept(sk, (struct sockaddr *)&caddr, &clen);
+		*ask = accept(sk, (struct sockaddr *)&caddr, &clen);
 		if (*ask < 0)
 			pr_perror("Can't accept connection to server");
 		else
