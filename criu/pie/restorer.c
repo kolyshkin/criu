@@ -1234,6 +1234,8 @@ long __export_restore_task(struct task_restore_args *args)
 	}
 
 #ifdef CONFIG_VDSO
+	if (args->check_only)
+		goto skip_vdso;
 	/*
 	 * Proxify vDSO.
 	 */
@@ -1248,6 +1250,7 @@ long __export_restore_task(struct task_restore_args *args)
 			break;
 		}
 	}
+skip_vdso:
 #endif
 
 	/*
@@ -1528,6 +1531,13 @@ long __export_restore_task(struct task_restore_args *args)
 	futex_set_and_wake(&thread_inprogress, args->nr_threads);
 
 	restore_finish_stage(task_entries_local, CR_STATE_RESTORE_CREDS);
+
+	if (args->check_only) {
+		pr_info("Restore check was successful.\n");
+		futex_abort_and_wake(&task_entries_local->nr_in_progress);
+		return 0;
+	}
+
 
 	if (ret)
 		BUG();
