@@ -1,5 +1,7 @@
 ## CRIU (Checkpoint and Restore in Userspace)
 
+[![Build Status](https://travis-ci.org/xemul/criu.svg?branch=criu-dev)](https://travis-ci.org/xemul/criu)
+
 An utility to checkpoint/restore tasks. Using this tool, you can freeze a
 running application (or part of it) and checkpoint it to a hard drive as a
 collection of files. You can then use the files to restore and run the
