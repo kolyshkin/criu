@@ -3,7 +3,7 @@
 #include "int.h"
 #include "types.h"
 #include "common/bitsperlong.h"
-#include "uapi/std/syscall.h"
+#include <compel/plugins/std/syscall.h>
 #include "log.h"
 
 struct simple_buf {
