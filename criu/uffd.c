@@ -127,7 +127,7 @@ static int prepare_sock_addr(struct sockaddr_un *saddr)
 	int len;
 
 	if (!getcwd(cwd, PATH_MAX)) {
-		pr_perror("Cannot get CWD\n");
+		pr_perror("Cannot get CWD");
 		return -1;
 	}
 
@@ -165,12 +165,12 @@ static int send_uffd(int sendfd, int pid)
 	 * the FD for UFFD */
 	pr_debug("Sending PID %d\n", pid);
 	if (send(fd, &pid, sizeof(pid), 0) < 0) {
-		pr_perror("PID sending error:");
+		pr_perror("PID sending error");
 		goto out;
 	}
 
 	if (send_fd(fd, NULL, 0, sendfd) < 0) {
-		pr_perror("send_fd error:");
+		pr_err("send_fd error\n");
 		goto out;
 	}
 
@@ -327,14 +327,17 @@ static struct lazy_pages_info *ud_open(int client)
 	 * the FD for UFFD */
 	ret = recv(client, &lpi->pid, sizeof(lpi->pid), 0);
 	if (ret != sizeof(lpi->pid)) {
-		pr_perror("PID recv error:");
+		if (ret < 0)
+			pr_perror("PID recv error");
+		else
+			pr_err("PID recv: short read\n");
 		goto out;
 	}
 	pr_debug("received PID: %d\n", lpi->pid);
 
 	lpi->uffd = recv_fd(client);
 	if (lpi->uffd < 0) {
-		pr_perror("recv_fd error:");
+		pr_err("recv_fd error");
 		goto out;
 	}
 	pr_debug("lpi->uffd %d\n", lpi->uffd);
@@ -675,7 +678,7 @@ static int handle_user_fault(struct lazy_pages_info *lpi, void *dest)
 		return 1;
 
 	if (ret != sizeof(msg)) {
-		pr_perror("Can't read userfaultfd message");
+		pr_err("Can't read userfaultfd message\n");
 		return -1;
 	}
 
@@ -856,7 +859,7 @@ static int prepare_uffds(int epollfd)
 	/* accept new client request */
 	len = sizeof(struct sockaddr_un);
 	if ((client = accept(listen, (struct sockaddr *) &saddr, &len)) < 0) {
-		pr_perror("server_accept error: %d", client);
+		pr_perror("server_accept error");
 		close(listen);
 		return -1;
 	}
