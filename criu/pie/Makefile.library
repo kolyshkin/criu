@@ -31,6 +31,9 @@ ifeq ($(VDSO),y)
         endif
 endif
 
+ifeq ($(SRCARCH),aarch64)
+	OBJS	+= ./$(ARCH_DIR)/memcpy.o
+endif
 ifeq ($(SRCARCH),ppc64)
         OBJS		+= ./$(ARCH_DIR)/memcpy_power7.o		\
 			   ./$(ARCH_DIR)/memcmp_64.o ./$(ARCH_DIR)/misc.o
