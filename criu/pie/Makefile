@@ -55,6 +55,7 @@ CFLAGS			+= -iquote $(SRC_DIR)
 ccflags-y		+= -iquote $(SRC_DIR)/compel/plugins/include
 ccflags-y		+= -iquote $(SRC_DIR)/compel/include
 ccflags-y		+= -DCR_NOGLIBC
+ccflags-y		+= -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0
 ifneq ($(filter-out clean mrproper,$(MAKECMDGOALS)),)
 NATIVE_CFLAGS		:= $(shell $(SRC_DIR)/compel/compel-host --arch=$(ARCH) cflags)
 ifeq ($(ARCH),x86)
