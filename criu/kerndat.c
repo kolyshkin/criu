@@ -23,6 +23,7 @@
 #include "proc_parse.h"
 #include "config.h"
 #include <compel/plugins/std/syscall-codes.h>
+#include <compel/compel.h>
 
 struct kerndat_s kdat = {
 };
@@ -348,7 +349,7 @@ static bool kerndat_has_memfd_create(void)
 
 static int get_task_size(void)
 {
-	kdat.task_size = task_size();
+	kdat.task_size = compel_task_size();
 	pr_debug("Found task size of %lx\n", kdat.task_size);
 	return 0;
 }
