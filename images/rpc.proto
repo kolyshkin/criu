@@ -110,6 +110,7 @@ message criu_opts {
 	optional bool			weak_sysctls		= 47;
 	optional bool			lazy_pages		= 48;
 	optional int32			status_fd		= 49;
+	optional bool			orphan_pts_master	= 50;
 }
 
 message criu_dump_resp {
