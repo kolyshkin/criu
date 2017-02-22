@@ -59,15 +59,15 @@ int do_task_reset_dirty_track(int pid)
 
 	ret = write(fd, cmd, sizeof(cmd));
 	if (ret < 0) {
-               if (errno == EINVAL) /* No clear-soft-dirty in kernel */
-                       ret = 1;
-               else {
-                       pr_perror("Can't reset %d's dirty memory tracker (%d)", pid, errno);
-                       ret = -1;
-               }
-       } else {
-               pr_info(" ... done\n");
-               ret = 0;
+		if (errno == EINVAL) /* No clear-soft-dirty in kernel */
+			ret = 1;
+		else {
+			pr_perror("Can't reset %d's dirty memory tracker (%d)", pid, errno);
+			ret = -1;
+		}
+	} else {
+		pr_info(" ... done\n");
+		ret = 0;
 	}
 
        close(fd);
