@@ -16,7 +16,7 @@ Dockerfile.%: Dockerfile.%.hdr Dockerfile.tmpl
 	cat $^ > $@
 
 qemu-user-static:
-	./extract-deb-pkg qemu-user-static
+	time ./extract-deb-pkg qemu-user-static
 
 binfmt_misc:
 	./binfmt_misc
