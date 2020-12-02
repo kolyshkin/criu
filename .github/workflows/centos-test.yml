@@ -12,4 +12,5 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Run CentOS ${{ matrix.target }} Test
+      shell: 'script -q -e -c "bash {0}"' # provide a terminal
       run: sudo -E make -C scripts/ci ${{ matrix.target }}
