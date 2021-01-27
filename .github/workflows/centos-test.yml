@@ -12,4 +12,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Run CentOS ${{ matrix.target }} Test
-      run: sudo -E make -C scripts/ci ${{ matrix.target }}
+      run: sudo -E script -e -c 'make -C scripts/ci ${{ matrix.target }}'

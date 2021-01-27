@@ -245,11 +245,7 @@ if [ -z "$SKIP_EXT_DEV_TEST" ]; then
 fi
 #make -C test/others/exec/ run
 make -C test/others/make/ run CC="$CC"
-if [ -n "$TRAVIS" ] || [ -n "$CIRCLECI" ]; then
-       # GitHub Actions does not provide a real TTY and CRIU will fail with:
-       # Error (criu/tty.c:1014): tty: Don't have tty to inherit session from, aborting
-       make -C test/others/shell-job/ run
-fi
+make -C test/others/shell-job/ run
 make -C test/others/rpc/ run
 
 ./test/zdtm.py run -t zdtm/static/env00 --sibling
