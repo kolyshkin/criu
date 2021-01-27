@@ -45,8 +45,8 @@ bindmount=""
 
 function remove_bindmount {
 	if [ -n "$bindmount" ]; then
-		$JOIN_CT umount $bindmount
-		$JOIN_CT rm -rf $bindmount
+		$JOIN_CT umount "$bindmount"
+		$JOIN_CT rm -rf "$bindmount"
 		bindmount=""
 	fi
 }
