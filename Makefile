@@ -404,14 +404,18 @@ help:
 	@echo '      gcov            - Make code coverage report'
 .PHONY: help
 
-lint:
+lint: shellcheck
 	flake8 --version
 	flake8 --config=scripts/flake8.cfg test/zdtm.py
 	flake8 --config=scripts/flake8.cfg test/inhfd/*.py
 	flake8 --config=scripts/flake8.cfg test/others/rpc/config_file.py
 	flake8 --config=scripts/flake8.cfg lib/py/images/pb2dict.py
+.PHONY: lint
+
+shellcheck:
 	shellcheck scripts/*.sh
 	shellcheck scripts/ci/*.sh scripts/ci/apt-install
+.PHONY: shellcheck
 
 include Makefile.install
 
