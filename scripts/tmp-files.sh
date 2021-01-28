@@ -17,8 +17,6 @@
 # Note: absolute path to tmp-files.sh should be supplied in --action-script with ''
 #
 
-POSTDUMP="post-dump"
-PRERESTORE="pre-restore"
 DUMPARGS="--create --absolute-names --gzip --no-unquote --no-wildcards --file"
 RESTOREARGS="--extract --gzip --no-unquote --no-wildcards --absolute-names --directory / --file"
 IMGFILE=$CRTOOLS_IMAGE_DIR"/tmpfiles.tar.gz"
@@ -26,7 +24,7 @@ IMGFILE=$CRTOOLS_IMAGE_DIR"/tmpfiles.tar.gz"
 MY_NAME=$(basename "$0")
 
 case "$CRTOOLS_SCRIPT_ACTION" in
-	$POSTDUMP )
+	postdump)
 		if [ "$#" -lt 1 ]; then
 			echo "$MY_NAME: ERROR! No files are given."
 			exit 1
@@ -34,7 +32,7 @@ case "$CRTOOLS_SCRIPT_ACTION" in
 		tar "$DUMPARGS" "$IMGFILE" -- "$@"
 		exit $?
 		;;
-	$PRERESTORE )
+	prerestore)
 		if [ "$#" -ne 0 ]; then
 			echo "$MY_NAME: ERROR! Not expected script args."
 			exit 1
