@@ -91,8 +91,7 @@ test_stream() {
 	# We must test CRIU features that dump content into an image file to ensure
 	# streaming compatibility.
 	STREAM_TEST_PATTERN='.*(ghost|fifo|unlink|memfd|shmem|socket_queue).*'
-	# shellcheck disable=SC2086
-	./test/zdtm.py run --stream -p 2 --keep-going -T "$STREAM_TEST_PATTERN" $ZDTM_OPTS
+	./test/zdtm.py run --stream -p 2 --keep-going -T "$STREAM_TEST_PATTERN" "${ZDTM_OPTS[@]}"
 }
 
 print_header() {
@@ -165,20 +164,19 @@ if [ "${COMPAT_TEST}x" = "yx" ] ; then
 	# for 32-bit tests. A better way would involve launching docker..
 	# But it would require making zdtm.py aware of docker and launching
 	# tests inside the CT.
-	INCOMPATIBLE_LIBS="libaio-dev libcap-dev libnl-3-dev libnl-route-3-dev"
-	IA32_PKGS=""
+	INCOMPATIBLE_LIBS=(libaio-dev libcap-dev libnl-3-dev libnl-route-3-dev)
+	IA32_PKGS=()
 	REFUGE=64-refuge
 
 	mkdir "$REFUGE"
-	for i in $INCOMPATIBLE_LIBS ; do
+	for i in "${INCOMPATIBLE_LIBS[@]}"; do
 		for j in $(dpkg --listfiles "$i" | grep '\.so$') ; do
 			cp "$j" "$REFUGE/"
 		done
-		IA32_PKGS="$IA32_PKGS $i:i386"
+		IA32_PKGS+=("$i:i386")
 	done
-	# shellcheck disable=SC2086
-	apt-get remove $INCOMPATIBLE_LIBS
-	scripts/ci/apt-install "$IA32_PKGS"
+	apt-get remove "${INCOMPATIBLE_LIBS[@]}"
+	scripts/ci/apt-install "${IA32_PKGS[@]}"
 	mkdir -p /usr/lib/x86_64-linux-gnu/
 	mv "$REFUGE"/* /usr/lib/x86_64-linux-gnu/
 fi
@@ -209,6 +207,9 @@ chmod 0777 test/
 chmod 0777 test/zdtm/static
 chmod 0777 test/zdtm/transition
 
+# Convert ZDTM_OPTS to bash array (mostly to please shellcheck)
+read -r -a ZDTM_OPTS <<< "$ZDTM_OPTS"
+
 # We run streaming tests separately to improve test completion times,
 # hence the exit 0.
 if [ "${STREAM_TEST}" = "1" ]; then
@@ -217,20 +218,16 @@ if [ "${STREAM_TEST}" = "1" ]; then
 	exit 0
 fi
 
-# shellcheck disable=SC2086
-./test/zdtm.py run -a -p 2 --keep-going $ZDTM_OPTS
+./test/zdtm.py run -a -p 2 --keep-going "${ZDTM_OPTS[@]}"
 
-LAZY_EXCLUDE="-x maps04 -x cmdlinenv00 -x maps007"
+LAZY_EXCLUDE=(-x maps04 -x cmdlinenv00 -x maps007)
 
 LAZY_TESTS='.*(maps0|uffd-events|lazy-thp|futex|fork).*'
-LAZY_OPTS="-p 2 -T $LAZY_TESTS $LAZY_EXCLUDE $ZDTM_OPTS"
+LAZY_OPTS=(-p 2 -T "$LAZY_TESTS" "${LAZY_EXCLUDE[@]}" "${ZDTM_OPTS[@]}")
 
-# shellcheck disable=SC2086
-./test/zdtm.py run $LAZY_OPTS --lazy-pages
-# shellcheck disable=SC2086
-./test/zdtm.py run $LAZY_OPTS --remote-lazy-pages
-# shellcheck disable=SC2086
-./test/zdtm.py run $LAZY_OPTS --remote-lazy-pages --tls
+./test/zdtm.py run "${LAZY_OPTS[@]}" --lazy-pages
+./test/zdtm.py run "${LAZY_OPTS[@]}" --remote-lazy-pages
+./test/zdtm.py run "${LAZY_OPTS[@]}" --remote-lazy-pages --tls
 
 bash -x ./test/jenkins/criu-fault.sh
 if [ "$UNAME_M" == "x86_64" ]; then
