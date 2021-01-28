@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# shellcheck disable=SC1091,SC2015
-
 set -x -e -o pipefail
 
 ./apt-install \
@@ -19,6 +17,7 @@ add-apt-repository \
 
 ./apt-install docker-ce
 
+# shellcheck disable=SC1091
 . /etc/lsb-release
 
 if [ "$DISTRIB_RELEASE" = "18.04" ]; then
@@ -53,11 +52,11 @@ for i in $(seq 50); do
 	# docker checkpoint doesn't wait when docker updates a container state
 	# Due to both these points, we need to sleep after docker checkpoint to
 	# avoid races with docker start.
-	docker exec cr ps axf &&
-	docker checkpoint create cr checkpoint"$i" &&
-	sleep 1 &&
-	docker ps &&
-	(docker exec cr true && exit 1 || exit 0) &&
+	docker exec cr ps axf
+	docker checkpoint create cr checkpoint"$i"
+	sleep 1
+	docker ps
+	docker exec cr true && exit 1
 	docker start --checkpoint checkpoint"$i" cr 2>&1 | tee log || {
 	cat "$(grep log 'log file:' | sed 's/log file:\s*//')" || true
 		docker logs cr || true
