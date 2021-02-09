@@ -1,0 +1,14 @@
+name: X86_64 Test
+
+on: [push, pull_request]
+
+jobs:
+  strategy:
+    matrix:
+      compiler: [GCC, CLANG]
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run X86_64 ${{ matrix.compiler }} Test
+      run: sudo make -C scripts/ci ${{ matrix.compiler }}=1 x86_64
