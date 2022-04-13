@@ -14,13 +14,6 @@ jobs:
     - name: Run make lint
       run: make lint
     - name: Run make indent
-      run: >
-        make indent &&
-        STATUS=$(git status --porcelain) &&
-        if [ ! -z "$STATUS" ]; then
-          echo "FAIL: some files are not correctly formatted.";
-          echo "$STATUS"
-          git diff
-          echo "FAIL: please run 'make indent'";
-          exit 1;
-        fi
+      run: |
+        make indent
+        git diff --exit-code
