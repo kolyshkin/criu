@@ -34,6 +34,7 @@ TST_FILE	=	\
 		fifo_dyn        \
 		fifo_loop       \
 		file_aio        \
+		soft-dirty-merged-vmas \
 
 
 TST	= $(TST_NOFILE) $(TST_FILE)
