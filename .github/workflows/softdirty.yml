@@ -1,0 +1,41 @@
+name: softdirty-merge
+
+on: [push, workflow_dispatch]
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-26.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v7
+    - name: Kernel info
+      run: cat /proc/version
+    - name: Upstream soft-dirty merge selftest
+      if: always()
+      run: |
+        gcc -Wall -O2 -o repro/softdirty-merge repro/softdirty-merge.c
+        ./repro/softdirty-merge
+    - name: Install deps
+      if: always()
+      run: sudo contrib/dependencies/apt-packages.sh
+    - name: Build
+      run: |
+        make -j"$(nproc)"
+        make -j"$(nproc)" -C test/zdtm
+    - name: Run soft-dirty-merged-vmas
+      run: |
+        rc=0
+        for i in 1 2 3; do
+          echo "=== iteration $i"
+          sudo ./test/zdtm.py run -t zdtm/transition/soft-dirty-merged-vmas \
+            --pre 2 -f h --keep-img always || rc=1
+        done
+        exit $rc
+    - name: Show dump logs
+      if: failure()
+      run: >
+        sudo find test/dump -name '*.log' -path '*soft-dirty*'
+        -exec sh -c 'echo "--- $1"; grep -nE "Error|Missing|hole" "$1" | head -40' _ {} \;
